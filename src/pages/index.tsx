@@ -1,5 +1,7 @@
 import React from "react";
+import { getOptionsForVote } from "../utils/getRandomPokemon";
 import { trpc } from "../utils/trpc";
+import Image from "next/image";
 
 const PokemonVotePage = () => {
   const { data, isLoading } = trpc.useQuery([
@@ -7,7 +9,18 @@ const PokemonVotePage = () => {
     { text: "Christopher" },
   ]);
 
-  return isLoading ? (
+  const [ids, updateIds] = React.useState(() => getOptionsForVote());
+  const [first, second] = ids;
+
+  const firstPokemon = trpc.useQuery(["pokemon.getPokemon", { id: first }]);
+  const secondPokeomn = trpc.useQuery(["pokemon.getPokemon", { id: second }]);
+
+  const voteForRoundest = (selected: number) => {
+    // fire mutation to persist changes
+    getOptionsForVote();
+  };
+
+  return firstPokemon.isLoading || secondPokeomn.isLoading ? (
     <div>Loading...</div>
   ) : (
     <div className="h-screen w-screen flex flex-col justify-center items-center">
@@ -16,9 +29,45 @@ const PokemonVotePage = () => {
       </div>
       <div className="pt-2"></div>
       <div className="border rounded p-8 flex justify-between max-w-2xl">
-        <div className="h-16 w-16 bg-red-100"></div>
+        <div className="h-64 w-64 flex flex-col items-center">
+          <div className="relative w-full h-full">
+            <Image
+              src={firstPokemon.data?.sprites.front_default!}
+              alt="first Pokemon"
+              layout="fill"
+            />
+          </div>
+          <div className="text-xl">{firstPokemon.data?.name.toUpperCase()}</div>
+          <div className="pt-4"></div>
+          <button
+            onClick={() => voteForRoundest(first)}
+            type="button"
+            className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Rounder
+          </button>
+        </div>
         <div className="p-8">vs</div>
-        <div className="h-16 w-16 bg-red-100"></div>
+        <div className="h-64 w-64 flex flex-col items-center relative">
+          <div className="relative w-full h-full">
+            <Image
+              src={secondPokeomn.data?.sprites.front_default!}
+              alt="second Pokemon"
+              layout="fill"
+            />
+          </div>
+          <div className="text-xl">
+            {secondPokeomn.data?.name.toUpperCase()}
+          </div>
+          <div className="pt-4"></div>
+          <button
+            onClick={() => voteForRoundest(second)}
+            type="button"
+            className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Rounder
+          </button>
+        </div>
       </div>
     </div>
   );
