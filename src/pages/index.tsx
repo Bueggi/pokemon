@@ -10,15 +10,25 @@ const PokemonVotePage = () => {
   ]);
 
   const [ids, updateIds] = React.useState(() => getOptionsForVote());
-  const [first, second] = ids;
+  const [first, second]: number[] = ids;
 
   const firstPokemon = trpc.useQuery(["pokemon.getPokemon", { id: first! }]);
   const secondPokeomn = trpc.useQuery(["pokemon.getPokemon", { id: second! }]);
 
-  const voteForRoundest = (selected: number) => {
-    // fire mutation to persist changes
-    getOptionsForVote();
+  const voteForRoundest = async (selected: number) => {
+    if (selected === first) {
+      const result = voteMutation.mutate({
+        votedFor: first,
+        votedAgainst: second!,
+      });
+      console.log(result);
+    } else {
+      voteMutation.mutate({ votedFor: second!, votedAgainst: first! });
+    }
+    updateIds(getOptionsForVote());
   };
+
+  const voteMutation = trpc.useMutation("pokemon.voteForPokemon");
 
   return firstPokemon.isLoading || secondPokeomn.isLoading ? (
     <div>Loading...</div>

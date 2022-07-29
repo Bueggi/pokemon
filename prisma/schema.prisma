@@ -6,17 +6,17 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite" // NOTE: sqlite does not work with NextAuth.js
+    provider = "mongodb" // NOTE: sqlite does not work with NextAuth.js
     url      = env("DATABASE_URL")
 }
 
 model Example {
-    id String @id @default(cuid())
+    id String @id @default(auto()) @map("_id") @db.ObjectId
 }
 
 // Necessary for Next auth
 model Account {
-    id                String  @id @default(cuid())
+    id                String  @id @default(auto()) @map("_id") @db.ObjectId
     userId            String
     type              String
     provider          String
@@ -34,7 +34,7 @@ model Account {
 }
 
 model Session {
-    id           String   @id @default(cuid())
+    id           String   @id @default(auto()) @map("_id") @db.ObjectId
     sessionToken String   @unique
     userId       String
     expires      DateTime
@@ -42,7 +42,7 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String    @id @default(auto()) @map("_id") @db.ObjectId
     name          String?
     email         String?   @unique
     emailVerified DateTime?
@@ -52,6 +52,7 @@ model User {
 }
 
 model VerificationToken {
+    id         String   @id @default(auto()) @map("_id") @db.ObjectId
     identifier String
     token      String   @unique
     expires    DateTime
@@ -60,7 +61,7 @@ model VerificationToken {
 }
 
 model Vote {
-    id          String   @id @default(cuid())
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
     createdAt   DateTime @default(now())
     votedFor    Int
     votedAgains Int
