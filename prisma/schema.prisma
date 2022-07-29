@@ -58,3 +58,10 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+model Vote {
+    id          String   @id @default(cuid())
+    createdAt   DateTime @default(now())
+    votedFor    Int
+    votedAgains Int
+}
