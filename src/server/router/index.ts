@@ -13,4 +13,4 @@ export const appRouter = createRouter()
   .merge("question.", protectedExampleRouter);
 
 // export type definition of API
-export type AppRouter = typeof appRouter;
+export type AppRouter = typeof appRouter; 
