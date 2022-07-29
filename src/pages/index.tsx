@@ -12,8 +12,8 @@ const PokemonVotePage = () => {
   const [ids, updateIds] = React.useState(() => getOptionsForVote());
   const [first, second] = ids;
 
-  const firstPokemon = trpc.useQuery(["pokemon.getPokemon", { id: first }]);
-  const secondPokeomn = trpc.useQuery(["pokemon.getPokemon", { id: second }]);
+  const firstPokemon = trpc.useQuery(["pokemon.getPokemon", { id: first! }]);
+  const secondPokeomn = trpc.useQuery(["pokemon.getPokemon", { id: second! }]);
 
   const voteForRoundest = (selected: number) => {
     // fire mutation to persist changes
@@ -40,7 +40,7 @@ const PokemonVotePage = () => {
           <div className="text-xl">{firstPokemon.data?.name.toUpperCase()}</div>
           <div className="pt-4"></div>
           <button
-            onClick={() => voteForRoundest(first)}
+            onClick={() => voteForRoundest(first!)}
             type="button"
             className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
@@ -61,7 +61,7 @@ const PokemonVotePage = () => {
           </div>
           <div className="pt-4"></div>
           <button
-            onClick={() => voteForRoundest(second)}
+            onClick={() => voteForRoundest(second!)}
             type="button"
             className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
